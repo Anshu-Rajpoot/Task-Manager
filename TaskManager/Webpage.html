@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<meta http-equiv="refresh" content="50">-->
+
+    <title>To-do List</title>
+</head>
+
+<noscript>Sorry!! I am not able to load... Check Your Internet Connections</noscript>
+<script>
+    window.onload = function () {
+    var savedTasks = JSON.parse(localStorage.getItem("tasks"));
+  
+    if (savedTasks) {
+      var taskList = document.getElementById("taskList");
+      savedTasks.forEach(function (task, index) {
+        var listItem = createTaskListItem(task.text, task.completed);
+        taskList.appendChild(listItem);
+      });
+    }
+  };
+  
+  function addTask() {
+    var taskInput = document.getElementById("taskInput");
+    var taskText = taskInput.value.trim();
+  
+    if (taskText === "") {
+      return;
+    }
+  
+    var taskList = document.getElementById("taskList");
+    var listItem = createTaskListItem(taskText, false);
+    taskList.appendChild(listItem);
+  
+    taskInput.value = "";
+    saveTasks();
+  }
+  
+  function createTaskListItem(text, completed) {
+    var listItem = document.createElement("li");
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = completed;
+    checkbox.onclick = toggleTaskStatus;
+  
+    var deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "Delete";
+    deleteBtn.onclick = function () {
+      deleteTask(listItem);
+    };
+  
+    listItem.appendChild(checkbox);
+    listItem.appendChild(document.createTextNode(text));
+    listItem.appendChild(deleteBtn);
+    listItem.style.textDecoration = completed ? "line-through" : "none";
+  
+    return listItem;
+  }
+  
+  function toggleTaskStatus() {
+    var listItem = this.parentElement;
+    listItem.style.textDecoration = this.checked ? "line-through" : "none";
+    saveTasks();
+  }
+  
+  function deleteTask(taskItem) {
+    var taskList = document.getElementById("taskList");
+    taskList.removeChild(taskItem);
+    saveTasks();
+  }
+  
+  function saveTasks() {
+    var taskList = document.getElementById("taskList").children;
+    var tasks = [];
+    for (var i = 0; i < taskList.length; i++) {
+      var taskItem = taskList[i];
+      var taskText = taskItem.textContent;
+      var completed = taskItem.querySelector("input[type=checkbox]").checked;
+      tasks.push({ text: taskText, completed: completed });
+    }
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+  function set(){
+    document.getElementById("tm").innerHTML=Date();
+    document.getElementById("tm").style.fontsize="25px";
+    document.getElementById("tm").style.color="black";
+    document.getElementById("tm").style.fontfamily="forte";
+  }
+  </script>
+
+<header style="font-family:forte; text-align:center">Task Manager</header>
+
+<!-- background image -->
+<body style="background-image:url('tm.jpg'); font-family:arial" >
+
+    <h1 style="background:rgba(46, 46, 66, 0.519); font-size:30; font-family:forte; text-align:center">TO-DO List</h1>
+    
+    <button type="button" onclick="set()">Umm btw!! What's the Time ?</button>
+    <p id="tm" >I'll Tell you...wait... </p>
+
+<input type="text" id="taskInput" placeholder="Enter The Task: ">
+<button onclick="addTask()">Add Task</button>
+
+<ol id="taskList" style="list-style:none">
+</ol>
+<!--
+<script src="script.js"></script>
+-->
+</body>
+
+<footer style="font-family:forte; text-align:right; padding:10px">
+    Created by: Anshu Rajpoot<br>
+    &copy; All the Copyrights are Reserved<br>
+</footer>
